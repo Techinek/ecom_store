@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 
 
@@ -11,17 +12,31 @@ class Collection(models.Model):
     featured_product = models.ForeignKey('Product', on_delete=models.SET_NULL,
                                          null=True, related_name='+')
 
+    class Meta:
+        ordering = ['title']
+
+    def __str__(self):
+        return self.title
+
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField()
     description = models.TextField()
-    unit_price = models.DecimalField(max_digits=6, decimal_places=2)
+    unit_price = models.DecimalField(max_digits=6,
+                                     decimal_places=2,
+                                     validators=[MinValueValidator(1)])
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT,
                                    related_name='products')
     promotions = models.ManyToManyField(Promotion, related_name='products')
+
+    class Meta:
+        ordering = ['title']
+
+    def __str__(self):
+        return self.title
 
 
 class Customer(models.Model):
@@ -46,6 +61,9 @@ class Customer(models.Model):
     class Meta:
         indexes = [models.Index(fields=['last_name',
                                         'first_name'])]
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
 
 
 class Order(models.Model):
