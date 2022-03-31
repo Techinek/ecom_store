@@ -3,40 +3,46 @@ from rest_framework import status
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 
 from .models import Collection, Product
 from .serializers import CollectionSerializer, ProductSerializer
 
 
-@api_view(['GET', 'POST'])
-def product_list(request):
-    if request.method == 'POST':
+class ProductList(APIView):
+    def get(self, request):
+        products = Product.objects.select_related('collection').all()
+        serializer = ProductSerializer(products,
+                                       many=True,
+                                       context={'request': request})
+        return Response(serializer.data)
+
+    def post(self, request):
         serializer = ProductSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data,
-                        status=status.HTTP_201_CREATED)
-
-    products = Product.objects.select_related('collection').all()
-    serializer = ProductSerializer(products,
-                                   many=True,
-                                   context={'request': request})
-    return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-@api_view(['GET', 'PUT'])
-def product_detail(request, pk):
-    if request.method == 'PUT':
+class ProductDetail(APIView):
+    def get(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
-        serializer = ProductSerializer(instance=product,
-                                       data=request.data)
+        serializer = ProductSerializer(product)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        serializer = ProductSerializer(instance=product, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    product = get_object_or_404(Product, pk=pk)
-    serializer = ProductSerializer(product)
-    return Response(serializer.data)
+    def delete(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        if product.orderitems.count() > 0:
+            return Response({'error': 'Ordered product cannot be deleted'})
+        product.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET', 'POST'])
