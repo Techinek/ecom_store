@@ -6,5 +6,6 @@ admin.site.index_title = 'Admin area'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('__debug__/', include('debug_toolbar.urls')),
+    path('store/', include('store.urls', namespace='e-store')),
+    path('__debug__/', include('debug_toolbar.urls'))
 ]
