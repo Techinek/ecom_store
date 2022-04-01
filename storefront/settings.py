@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 
     # 3-rd party
     'debug_toolbar',
+    'django_filters',
     'rest_framework'
 ]
 
