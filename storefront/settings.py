@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     # 3-rd party
     'debug_toolbar',
     'django_filters',
+    'djoser',
     'rest_framework'
 ]
 
@@ -145,7 +146,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Rest Framework
 
 REST_FRAMEWORK = {
-    'COERCE_DECIMAL_TO_STRING': False
+    'COERCE_DECIMAL_TO_STRING': False,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+   'AUTH_HEADER_TYPES': ('JWT',),
 }
 
 # IP for Django-debug toolbar
