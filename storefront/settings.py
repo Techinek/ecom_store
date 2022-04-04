@@ -152,12 +152,18 @@ REST_FRAMEWORK = {
     ),
 }
 
+# Djoser settings
+
 SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('JWT',),
 }
 
+DJOSER = {
+    'SERIALIZERS': {
+        'user_create': 'custom_user.serializers.UserCreateSerializer'
+    }
+}
 # IP for Django-debug toolbar
-
 if DEBUG:
     import socket
     hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
