@@ -4,7 +4,9 @@ from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
-                                   RetrieveModelMixin, UpdateModelMixin)
+                                   RetrieveModelMixin)
+from rest_framework.permissions import (IsAuthenticated,
+                                        DjangoModelPermissions)
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
@@ -12,6 +14,7 @@ from .filters import ProductFilter
 from .models import (Cart, CartItem, Collection, Customer, Product, Review,
                      OrderItem)
 from .pagination import DefaultPagination
+from .permissions import IsAdminOrReadOnly
 from .serializers import (AddCartItemSerializer, CartSerializer,
                           CartItemSerializer, CollectionSerializer,
                           CustomerSerializer, ProductSerializer,
@@ -24,6 +27,7 @@ class ProductViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = ProductFilter
     pagination_class = DefaultPagination
+    permission_classes = [IsAdminOrReadOnly]
     search_fields = ['title', 'description']
     ordering_fields = ['unit_price', 'last_update']
 
@@ -39,6 +43,7 @@ class ProductViewSet(ModelViewSet):
 class CollectionViewSet(ModelViewSet):
     queryset = Collection.objects.annotate(products_count=Count('products'))
     serializer_class = CollectionSerializer
+    permission_classes = [IsAdminOrReadOnly]
 
     def destroy(self, request, *args, **kwargs):
         collection = get_object_or_404(Collection, pk=kwargs['pk'])
@@ -84,12 +89,13 @@ class CartItemViewSet(ModelViewSet):
                 select_related('product'))
 
 
-class CustomerViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin,
-                      GenericViewSet):
+class CustomerViewSet(ModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
+    permission_classes = [DjangoModelPermissions]
 
-    @action(detail=False, methods=['GET', 'PUT'])
+    @action(detail=False, methods=['GET', 'PUT'],
+            permission_classes=[IsAuthenticated])
     def me(self, request):
         customer = get_object_or_404(Customer, user_id=request.user.pk)
         if request.method == 'PUT':
@@ -99,4 +105,3 @@ class CustomerViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin,
             return Response(serializer.data)
         serializer = CustomerSerializer(customer)
         return Response(serializer.data)
-
