@@ -1,7 +1,10 @@
 from uuid import uuid4
 
+from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
+
+User = get_user_model()
 
 
 class Promotion(models.Model):
@@ -59,6 +62,7 @@ class Customer(models.Model):
     membership = models.CharField(max_length=1,
                                   choices=MEMBERSHIP_CHOICES,
                                   default=MEMBERSHIP_BRONZE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['first_name', 'last_name']

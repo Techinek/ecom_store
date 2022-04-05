@@ -161,7 +161,8 @@ SIMPLE_JWT = {
 
 DJOSER = {
     'SERIALIZERS': {
-        'user_create': 'custom_user.serializers.UserCreateSerializer'
+        'user_create': 'custom_user.serializers.UserCreateSerializer',
+        'current_user': 'custom_user.serializers.UserSerializer',
     }
 }
 # IP for Django-debug toolbar
