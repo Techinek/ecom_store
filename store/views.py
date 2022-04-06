@@ -20,7 +20,7 @@ from .serializers import (AddCartItemSerializer, CartSerializer,
                           CustomerSerializer, OrderSerializer,
                           ProductSerializer,
                           ReviewSerializer, UpdateCartItemSerializer,
-                          CreateOrderSerializer)
+                          CreateOrderSerializer, UpdateOrderSerializer)
 
 
 class ProductViewSet(ModelViewSet):
@@ -128,11 +128,15 @@ class OrderViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return CreateOrderSerializer
+        elif self.request.method == 'PATCH':
+            return UpdateOrderSerializer
         return OrderSerializer
 
     def get_queryset(self):
         user = self.request.user
+
         if user.is_staff:
             return Order.objects.all()
+
         customer_id = get_object_or_404(Customer, user_id=user.id)
         return Order.objects.filter(customer_id=customer_id)
