@@ -4,8 +4,9 @@ from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html, urlencode
 
-from .models import Collection, Customer, Product, Order, OrderItem
 from tags.models import TaggedItem
+
+from .models import Collection, Customer, Order, OrderItem, Product
 
 
 class InventoryFilter(admin.SimpleListFilter):

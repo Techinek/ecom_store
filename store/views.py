@@ -1,26 +1,25 @@
 from django.db.models import Count
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
-from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
                                    RetrieveModelMixin)
-from rest_framework.permissions import (IsAuthenticated,
-                                        DjangoModelPermissions, IsAdminUser)
+from rest_framework.permissions import (DjangoModelPermissions, IsAdminUser,
+                                        IsAuthenticated)
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from .filters import ProductFilter
-from .models import (Cart, CartItem, Collection, Customer, Product, Review,
-                     Order, OrderItem)
+from .models import (Cart, CartItem, Collection, Customer, Order, OrderItem,
+                     Product, Review)
 from .pagination import DefaultPagination
 from .permissions import IsAdminOrReadOnly
-from .serializers import (AddCartItemSerializer, CartSerializer,
-                          CartItemSerializer, CollectionSerializer,
-                          CustomerSerializer, OrderSerializer,
-                          ProductSerializer,
-                          ReviewSerializer, UpdateCartItemSerializer,
-                          CreateOrderSerializer, UpdateOrderSerializer)
+from .serializers import (AddCartItemSerializer, CartItemSerializer,
+                          CartSerializer, CollectionSerializer,
+                          CreateOrderSerializer, CustomerSerializer,
+                          OrderSerializer, ProductSerializer, ReviewSerializer,
+                          UpdateCartItemSerializer, UpdateOrderSerializer)
 
 
 class ProductViewSet(ModelViewSet):
