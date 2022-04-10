@@ -12,18 +12,19 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from .filters import ProductFilter
 from .models import (Cart, CartItem, Collection, Customer, Order, OrderItem,
-                     Product, Review)
+                     Product, ProductImage, Review)
 from .pagination import DefaultPagination
 from .permissions import IsAdminOrReadOnly
 from .serializers import (AddCartItemSerializer, CartItemSerializer,
                           CartSerializer, CollectionSerializer,
                           CreateOrderSerializer, CustomerSerializer,
-                          OrderSerializer, ProductSerializer, ReviewSerializer,
+                          OrderSerializer, ProductSerializer,
+                          ProductImageSerializer, ReviewSerializer,
                           UpdateCartItemSerializer, UpdateOrderSerializer)
 
 
 class ProductViewSet(ModelViewSet):
-    queryset = Product.objects.select_related('collection').all()
+    queryset = Product.objects.prefetch_related('images').all()
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = ProductFilter
@@ -39,6 +40,18 @@ class ProductViewSet(ModelViewSet):
         if OrderItem.objects.filter(product_id=kwargs['pk']).count() > 0:
             return Response({'error': 'Ordered product cannot be deleted'})
         return super().destroy(request, *args, **kwargs)
+
+
+class ProductImageViewSet(ModelViewSet):
+    serializer_class = ProductImageSerializer
+
+    def get_serializer_context(self):
+        return {'product_id': self.kwargs['product_pk']}
+
+    def get_queryset(self):
+        return (ProductImage.objects.filter(
+                product_id=self.kwargs['product_pk']))
+
 
 
 class CollectionViewSet(ModelViewSet):
