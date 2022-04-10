@@ -14,7 +14,7 @@ Ecommerce project for placing orders with unique features:
 - Djoser
 
 ## Dummy data is included:
-Just run seed.sql to populate model instances. You may
+Just run seed_db.py to populate model instances. You may
 encounter IntegrityError caused by duplicating key value unique constraint.
 To solve this problem you should resync primary key fields:
 
@@ -44,5 +44,10 @@ docker-compose up
 ```
 3. Make migrations:
 ```
-python manage.py makemigrations и $ python manage.py migrate
+docker exec mosh_web_1 python manage.py makemigrations
+docker exec mosh_web_1 python manage.py migrate
+```
+4. Populate dummy data:
+```
+docker exec mosh_web_1 python manage.py seed_db
 ```
