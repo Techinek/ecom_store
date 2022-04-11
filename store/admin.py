@@ -6,7 +6,8 @@ from django.utils.html import format_html, urlencode
 
 from tags.models import TaggedItem
 
-from .models import Collection, Customer, Order, OrderItem, Product
+from .models import (Collection, Customer, Order, OrderItem, Product,
+                     ProductImage)
 
 
 class InventoryFilter(admin.SimpleListFilter):
@@ -28,6 +29,17 @@ class TagInline(GenericTabularInline):
     model = TaggedItem
 
 
+class ProductImageInline(admin.TabularInline):
+    model = ProductImage
+    readonly_fields = ['thumbnail']
+
+    def thumbnail(self, instance):
+        if instance.image:
+            return format_html(f'<img src={instance.image.url} '
+                               f'class="thumbnail" />')
+        return 'No image'
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     autocomplete_fields = ['collection']
@@ -35,7 +47,7 @@ class ProductAdmin(admin.ModelAdmin):
         'slug': ['title']
     }
     actions = ['clear_inventory']
-    inlines = [TagInline]
+    inlines = [ProductImageInline, TagInline]
     list_display = ['title', 'unit_price', 'inventory_status',
                     'collection_title', 'last_update']
     list_editable = ['unit_price']
@@ -61,6 +73,11 @@ class ProductAdmin(admin.ModelAdmin):
                 f'{updated_count} products were updated successfully!',
                 messages.SUCCESS
         )
+
+    class Media:
+        css = {
+            'all': ['store/css/styles.css']
+        }
 
 
 @admin.register(Customer)
