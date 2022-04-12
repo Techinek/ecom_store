@@ -53,7 +53,6 @@ class ProductImageViewSet(ModelViewSet):
                 product_id=self.kwargs['product_pk']))
 
 
-
 class CollectionViewSet(ModelViewSet):
     queryset = Collection.objects.annotate(products_count=Count('products'))
     serializer_class = CollectionSerializer
