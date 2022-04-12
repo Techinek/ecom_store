@@ -1,4 +1,5 @@
 import os
+from celery.schedules import crontab
 from datetime import timedelta
 from pathlib import Path
 
@@ -186,4 +187,4 @@ DEFAULT_FROM_EMAIL = 'from@me.com'
 
 # Celery settings
 
-CELERY_BROKER_URL = 'redis://redis:6379/1'
+CELERY_BROKER_URL = 'redis://redis:6379/0'

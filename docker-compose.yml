@@ -4,7 +4,7 @@ services:
   db:
     image: postgres
     volumes:
-      - ./data/db:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_NAME=postgres
       - POSTGRES_USER=postgres
@@ -44,12 +44,26 @@ services:
       - redis
     volumes:
       - .:/code
-#  celery-beat:
-#      build: .
-#      command: celery -A storefront beat --loglevel=info
-#      depends_on:
-#        - redis
-#      volumes:
-#        - .:/code
+  celery-beat:
+      build: .
+      command: celery -A storefront beat --loglevel=info
+      depends_on:
+        - redis
+      volumes:
+        - .:/code
+  flower:
+    build: .
+    command: celery -A storefront flower
+    depends_on:
+      - web
+      - redis
+      - celery
+    environment:
+      - DEBUG=1
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+    ports:
+      - "5555:5555"
 volumes:
   redisdata:
+  pgdata:
