@@ -20,6 +20,7 @@ services:
       - POSTGRES_NAME=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - SECRET_KEY=jgtqadiot568jh59gkpbmeo8tk98k98k8
     depends_on:
       - db
       - redis

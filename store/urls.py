@@ -2,8 +2,8 @@ from django.urls import include, path
 from rest_framework_nested import routers
 
 from .views import (CartItemViewSet, CartViewSet, CollectionViewSet,
-                    CustomerViewSet, OrderViewSet, ProductViewSet,
-                    ProductImageViewSet, ReviewViewSet)
+                    CustomerViewSet, OrderViewSet, ProductImageViewSet,
+                    ProductViewSet, ReviewViewSet)
 
 app_name = 'store'
 

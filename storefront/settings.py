@@ -1,7 +1,8 @@
 import os
-from celery.schedules import crontab
 from datetime import timedelta
 from pathlib import Path
+
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
@@ -12,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ik9lvv+p=i_cxogcxz0a+c(pru9zd@4mb0(kjm4wvpj4p%7x52'
+SECRET_KEY = os.environ.get('SECRET_KEY', default='toplocalsecret')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -178,7 +179,7 @@ AUTH_USER_MODEL = 'custom_user.CustomUser'
 # Email settings for smt4dev
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'localhost'
+EMAIL_HOST = 'smp4dev'
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 2525
@@ -188,3 +189,49 @@ DEFAULT_FROM_EMAIL = 'from@me.com'
 # Celery settings
 
 CELERY_BROKER_URL = 'redis://redis:6379/0'
+
+
+# Django-redis settings
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/1",
+        "TIMEOUT": 10 * 60,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
+
+# Logging settings
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'general.log',
+        }
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO'
+        }
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} ({levelname}) - {name} - {message}',
+            'style': '{'
+        }
+    }
+}

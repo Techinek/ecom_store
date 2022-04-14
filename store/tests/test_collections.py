@@ -1,5 +1,5 @@
-from model_bakery import baker
 import pytest
+from model_bakery import baker
 from rest_framework import status
 from rest_framework.reverse import reverse
 

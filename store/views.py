@@ -18,8 +18,8 @@ from .permissions import IsAdminOrReadOnly
 from .serializers import (AddCartItemSerializer, CartItemSerializer,
                           CartSerializer, CollectionSerializer,
                           CreateOrderSerializer, CustomerSerializer,
-                          OrderSerializer, ProductSerializer,
-                          ProductImageSerializer, ReviewSerializer,
+                          OrderSerializer, ProductImageSerializer,
+                          ProductSerializer, ReviewSerializer,
                           UpdateCartItemSerializer, UpdateOrderSerializer)
 
 

@@ -51,3 +51,14 @@ docker exec mosh_web_1 python manage.py migrate
 ```
 docker exec mosh_web_1 python manage.py seed_db
 ```
+
+## Additional services:
+Some additional services are included but not used in this project. They are 
+presented here to show how to configure and run them in containers:
+- Redis
+- Celery
+- Celery-beat
+- Flower
+- Smtp4dev
+
+Author: [Andrey Kuskov](https://github.com/Techinek)
